@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/templates/css/rooms.css">
     <title>WebSocket Chat</title>
 </head>
 <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="message_input" autocomplete="off" /><button style="color:brown">Send</button>
+    <div class="titulo">
+        <button class="botao tema" onclick="redirect('politica')">Tema Anterior</button>
+        <div>Religião</div>
+        <button class="botao tema" onclick="redirect('culinaria')">Proximo Tema</button>
+    </div>
+    <ul id="chat"></ul>
+    <form id="form" action="" class="campoTexto">
+        <input type="text" id="mensagem" autocomplete="off" placeholder="Digite sua mensagem"/>
+        <button class="botao">Enviar</button>
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -16,7 +23,7 @@
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         socket.on('message_religiao', function(msg){
-            var ul = document.getElementById('messages');
+            var ul = document.getElementById('chat');
             var li = document.createElement('li');
             li.appendChild(document.createTextNode(msg));
             ul.appendChild(li);
@@ -24,10 +31,14 @@
 
         document.getElementById('form').onsubmit = function(event) {
             event.preventDefault();
-            var messageInput = document.getElementById('message_input');
+            var messageInput = document.getElementById('mensagem');
             socket.emit('message_religiao', messageInput.value);
             messageInput.value = '';
         };
+
+        function redirect(tema){
+            window.location.href = "/" + tema;
+        }
     </script>
 </body>
 </html>

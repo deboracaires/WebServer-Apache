@@ -3,31 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="templates/css/reset.css">
+    <link rel="stylesheet" href="templates/css/styles.css">
+    <link rel="stylesheet" href="templates/css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;500&display=swap" rel="stylesheet">
     <title>WebSocket Chat</title>
 </head>
 <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="message_input" autocomplete="off" /><button style="color:red">Send</button>
-    </form>
+    <div class="tela">
+        <div class="container-signup-signin">
+            <div class="logo">
+                <h1>WebSocket Chat</h1>
+            </div>
+            <div class="signup">
+                <form class="form-signup" id="form">
+                    <input type="text" placeholder="Nome de usuário" id="user"/>
+                    <input type="password" placeholder="Senha" id="senha"/>
+                    <select id="topic">
+                        <option value="" disabled selected>Selecione o tópico desejado</option>
+                        <option value="culinaria">Culinária</option>
+                        <option value="futebol">Futebol</option>
+                        <option value="politica">Política</option>
+                        <option value="religiao">Religião</option>
+                    </select>
+                    <button onclick="enviar()">Entrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
     <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on('message', function(msg){
-            var ul = document.getElementById('messages');
-            var li = document.createElement('li');
-            li.appendChild(document.createTextNode(msg));
-            ul.appendChild(li);
-        });
+        socket.on('redirect', function(red) {
+            window.location.href = red;
+        })
 
-        document.getElementById('form').onsubmit = function(event) {
+        function enviar() {
             event.preventDefault();
-            var messageInput = document.getElementById('message_input');
-            socket.emit('message', messageInput.value);
-            messageInput.value = '';
-        };
+            let nome = document.getElementById('user').value;
+            let senha = document.getElementById('senha').value;
+            let topic = document.getElementById('topic').value;
+
+            socket.emit('login', {name: nome, senha: senha, topic: topic});
+            sessionStorage.setItem('username', nome);  // Armazena o nome na sessionStorage
+            localStorage.setItem('password', senha);
+            nome = "";
+            senha = "";
+            topic = "";
+        }
     </script>
+
 </body>
 </html>
