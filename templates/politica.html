@@ -8,14 +8,14 @@
 <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-        <input id="message_input" autocomplete="off" /><button style="color:red">Send</button>
+        <input id="message_input" autocomplete="off" /><button style="color:blue">Send</button>
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on('message', function(msg){
+        socket.on('message_politica', function(msg){
             var ul = document.getElementById('messages');
             var li = document.createElement('li');
             li.appendChild(document.createTextNode(msg));
@@ -25,7 +25,7 @@
         document.getElementById('form').onsubmit = function(event) {
             event.preventDefault();
             var messageInput = document.getElementById('message_input');
-            socket.emit('message', messageInput.value);
+            socket.emit('message_politica', messageInput.value);
             messageInput.value = '';
         };
     </script>
