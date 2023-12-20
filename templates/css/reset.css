@@ -56,3 +56,11 @@ form {
 	-moz-box-shadow: none;
 	box-shadow: none; 
 }
+
+textarea:focus, textarea:focus-visible, input:focus, input:focus-visible, select:focus, select:focus-visible {
+    box-shadow: none;
+    border: none;
+    outline: none;
+}
+
+ 

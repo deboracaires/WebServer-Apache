@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
-app = Flask(__name__)
+app = Flask(__name__,  static_folder="templates")
 socketio = SocketIO(app)
 #---------------ASSUNTOS GERAIS---------------#
 @app.route('/')
@@ -16,7 +16,9 @@ def handle_message(msg):
 
 #----------------Politica----------------------#
 @app.route('/politica')
+@socketio.on('politica')
 def politica():
+    print('aaaa')
     return render_template('politica.html')
 
 @socketio.on('message_politica')
