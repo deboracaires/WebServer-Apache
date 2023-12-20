@@ -38,11 +38,13 @@
     outline: none;
     box-shadow: 0;
     padding-left: 8px;
+    background-color: grey;
+    color: white;
 }
 
 .form-signup input::placeholder {
     padding-left: 4px;
-    color: black;
+    color: white;
 }
 
 .form-signup button {

@@ -21,7 +21,7 @@
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         socket.on('message_politica', function(msg){
-            var ul = document.getElementById('messages');
+            var ul = document.getElementById('chat');
             var li = document.createElement('li');
             li.appendChild(document.createTextNode(msg));
             ul.appendChild(li);
@@ -29,7 +29,7 @@
 
         document.getElementById('form').onsubmit = function(event) {
             event.preventDefault();
-            var messageInput = document.getElementById('message_input');
+            var messageInput = document.getElementById('mensagem');
             socket.emit('message_politica', messageInput.value);
             messageInput.value = '';
         };

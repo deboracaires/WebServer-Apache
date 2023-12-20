@@ -36,16 +36,27 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('redirect', function(red) {
+            window.location.href = red;
+        })
+
         function enviar() {
             event.preventDefault();
+            let socket = io.connect('http://' + document.domain + ':' + location.port);
             let nome = document.getElementById('user').value;
             let senha = document.getElementById('senha').value;
             let topic = document.getElementById('topic').value;
             
-            socket.io(topic, {name: name, senha: senha})
-            window.location.href = "/" + topic;
-
+            socket.emit('login', {name: nome, senha: senha, topic: topic})
+            localStorage.setItem('username', nome);
+            localStorage.setItem('password', senha);
+            nome = "";
+            senha = "";
+            topic = "";
         }
+
     </script>
 </body>
 </html>

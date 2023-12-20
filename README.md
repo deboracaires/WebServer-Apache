@@ -33,3 +33,11 @@ dentro colocar com as alterações devidas para o caminho no seu pc
 Ctrl+o Enter Ctrl+x
 
 sudo systemctl reload apache2
+
+migrations
+
+flask db init
+
+flask db migrate -m "Initial migration"
+
+flask db upgrade

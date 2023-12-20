@@ -1,22 +1,57 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 
 app = Flask(__name__,  static_folder="templates")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 socketio = SocketIO(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
 #---------------ASSUNTOS GERAIS---------------#
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@socketio.on('login')
+def handle_login(data):
+    name = data['name']
+    senha = data['senha']
+    topic = data['topic']
+
+    user = User.query.filter_by(name=name, password=senha).first()
+    
+    if not user:
+        new_user = User(name=name, password=senha)
+        db.session.add(new_user)
+        db.session.commit()
+
+    if topic == 'culinaria':
+        socketio.emit('redirect', '/culinaria')  
+    elif topic == 'futebol':
+        socketio.emit('redirect', '/futebol')
+    elif topic == 'politica':
+        socketio.emit('redirect', '/politica')
+    elif topic == 'religiao':
+        socketio.emit('redirect', '/religiao')
+    else:
+        socketio.emit('redirect', '/')
+
 @socketio.on('message')
 def handle_message(msg):
-    print('Received message: ' + msg)
+    # print('Received message: ' + msg)
     socketio.emit('message', msg)
  #---------------ASSUNTOS GERAIS---------------#
 
 #----------------Politica----------------------#
 @app.route('/politica')
-@socketio.on('politica')
 def politica():
     print('aaaa')
     return render_template('politica.html')
