@@ -1,0 +1,113 @@
+<div id="chat"></div>
+<div style="display: flex; width: 100%; justify-content: center;">
+    <input type="text" id="mensagem" placeholder="Digite sua mensagem">
+    <button id="enviar" onclick="enviarMensagem()">Enviar</button>
+</div>
+<br>
+<input type="file" id="videoInput" accept="video/*">
+<button id="enviarVideo" onclick="enviarVideo()">Enviar Vídeo</button>
+<div id="video-container"></div>
+
+<script>
+    const nomeUsuario = prompt("Digite seu nome de usuário:");
+
+    if (!nomeUsuario) {
+        alert("Nome de usuário é obrigatório. Recarregue a página e insira um nome.");
+        throw new Error("Nome de usuário não fornecido.");
+    }
+
+    const socket = new WebSocket("ws://localhost:8765");
+    const chatDiv = document.getElementById("chat");
+    const videoContainer = document.getElementById("video-container");
+    const videoInput = document.getElementById("videoInput");
+
+    socket.onopen = () => {
+        // Enviar o nome de usuário ao servidor quando a conexão é estabelecida
+        socket.send(nomeUsuario);
+    };
+
+    socket.onmessage = (event) => {
+        const mensagem = event.data;
+
+        // Verificar se a mensagem é um vídeo
+        if (mensagem.startsWith("VIDEO:")) {
+            exibirVideo(nomeUsuario, mensagem.substring(6));
+        } else {
+            // Se não for um vídeo, exibir como mensagem de texto no chat
+            const mensagemRecebida = document.createElement("p");
+            mensagemRecebida.textContent = mensagem;
+            chatDiv.appendChild(mensagemRecebida);
+        }
+    };
+
+    function enviarMensagem() {
+        const mensagemInput = document.getElementById("mensagem");
+        const mensagem = mensagemInput.value;
+
+        if (mensagem.trim() !== "") {
+            socket.send(`${mensagem}`);
+            mensagemInput.value = "";
+        }
+    }
+
+    function enviarVideo() {
+        const file = videoInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const videoData = reader.result.split(",")[1]; // Remover o prefixo "data:video/*;base64,"
+                socket.send(`VIDEO:${videoData}`);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Por favor, selecione um vídeo antes de enviar.");
+        }
+    }
+
+    function exibirVideo(nomeRemetente, videoData) {
+        // Criar uma mensagem formatada para exibir no chat
+        const mensagemVideo = document.createElement("p");
+        mensagemVideo.innerHTML = `${nomeRemetente}: <br>`;
+
+        // Criar um elemento de vídeo e configurá-lo
+        const video = document.createElement("video");
+        video.controls = true;
+        video.style.width = "80vw";
+        video.style.height = "40vh";
+        video.style.marginTop = "0";
+
+        // Converter os dados base64 para Blob e criar a URL do vídeo
+        const blob = b64toBlob(videoData, "video/mp4");
+        const videoURL = URL.createObjectURL(blob);
+
+        video.src = videoURL;
+
+        // Adicionar o vídeo à mensagem
+        mensagemVideo.appendChild(video);
+
+        // Adicionar a mensagem ao contêiner do chat
+        chatDiv.appendChild(mensagemVideo);
+    }
+
+    // Função auxiliar para converter base64 para Blob
+    function b64toBlob(base64, contentType = "") {
+        const sliceSize = 1024;
+        const byteCharacters = atob(base64);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+            const byteNumbers = new Array(slice.length);
+
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, { type: contentType });
+    }
+</script>

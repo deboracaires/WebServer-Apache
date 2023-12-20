@@ -1,165 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat WebSocket</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            text-align: center;
         }
+
         #chat {
             height: 75vh;
             overflow-y: scroll;
             border: 1px solid #ccc;
             padding: 10px;
             margin-bottom: 10px;
-            background-color: #fff;
+            background-color: white;
             text-align: left;
         }
-        #mensagem {
-            width: 70%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            margin-right: 5px;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
         }
-        #enviar, #enviarVideo {
-            width: 20%;
-            padding: 8px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        hr {
+            background-color: black;
         }
-        #enviarVideo {
-            margin-top: 10px;
-        }
-        #video-container {
-            margin-top: 10px;
-        }
+
         video {
             width: 80vw;
         }
     </style>
 </head>
-<body>
-    <div id="chat"></div>
-    <div style="display: flex; width: 100vw; justify-content: center;">
-        <input type="text" id="mensagem" placeholder="Digite sua mensagem">
-        <button id="enviar" onclick="enviarMensagem()">Enviar</button>
-    </div>
-    <br>
-    <input type="file" id="videoInput" accept="video/*">
-    <button id="enviarVideo" onclick="enviarVideo()">Enviar Vídeo</button>
-    <div id="video-container"></div>
 
-    <script>
-        const nomeUsuario = prompt("Digite seu nome de usuário:");
+<body class="bg-gray-800 m-0 p-0 w-screen h-screen flex text-white">
+    <section id="room" class="w-full">
+        <div class="p-8 w-full flex flex-col justify-center items-center gap-6 h-full">
+            <h1 class="text-2xl font-bold">
+                Escolha um tema para entrar no chat
+            </h1>
 
-        if (!nomeUsuario) {
-            alert("Nome de usuário é obrigatório. Recarregue a página e insira um nome.");
-            throw new Error("Nome de usuário não fornecido.");
-        }
-
-        const socket = new WebSocket("ws://www.trabalhofinalfrc.com:5000/ws");
-        const chatDiv = document.getElementById("chat");
-        const videoContainer = document.getElementById("video-container");
-        const videoInput = document.getElementById("videoInput");
-
-        socket.onopen = () => {
-            // Enviar o nome de usuário ao servidor quando a conexão é estabelecida
-            socket.send(nomeUsuario);
-        };
-
-        socket.onmessage = (event) => {
-            const mensagem = event.data;
-
-            // Verificar se a mensagem é um vídeo
-            if (mensagem.startsWith("VIDEO:")) {
-                exibirVideo(nomeUsuario, mensagem.substring(6));
-            } else {
-                // Se não for um vídeo, exibir como mensagem de texto no chat
-                const mensagemRecebida = document.createElement("p");
-                mensagemRecebida.textContent = mensagem;
-                chatDiv.appendChild(mensagemRecebida);
-            }
-        };
-
-        function enviarMensagem() {
-            const mensagemInput = document.getElementById("mensagem");
-            const mensagem = mensagemInput.value;
-
-            if (mensagem.trim() !== "") {
-                socket.send(`${mensagem}`);
-                mensagemInput.value = "";
-            }
-        }
-
-        function enviarVideo() {
-            const file = videoInput.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const videoData = reader.result.split(",")[1]; // Remover o prefixo "data:video/*;base64,"
-                    socket.send(`VIDEO:${videoData}`);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert("Por favor, selecione um vídeo antes de enviar.");
-            }
-        }
-
-        function exibirVideo(nomeRemetente, videoData) {
-            // Criar uma mensagem formatada para exibir no chat
-            const mensagemVideo = document.createElement("p");
-            mensagemVideo.innerHTML = `${nomeRemetente}: <br>`;
-            
-            // Criar um elemento de vídeo e configurá-lo
-            const video = document.createElement("video");
-            video.controls = true;
-            video.style.width = "80vw";
-            video.style.height = "40vh";
-            video.style.marginTop = "0";
-
-            // Converter os dados base64 para Blob e criar a URL do vídeo
-            const blob = b64toBlob(videoData, "video/mp4");
-            const videoURL = URL.createObjectURL(blob);
-
-            video.src = videoURL;
-
-            // Adicionar o vídeo à mensagem
-            mensagemVideo.appendChild(video);
-
-            // Adicionar a mensagem ao contêiner do chat
-            chatDiv.appendChild(mensagemVideo);
-        }
-
-        // Função auxiliar para converter base64 para Blob
-        function b64toBlob(base64, contentType = "") {
-            const sliceSize = 1024;
-            const byteCharacters = atob(base64);
-            const byteArrays = [];
-
-            for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                const slice = byteCharacters.slice(offset, offset + sliceSize);
-                const byteNumbers = new Array(slice.length);
-
-                for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                }
-
-                const byteArray = new Uint8Array(byteNumbers);
-                byteArrays.push(byteArray);
-            }
-
-            return new Blob(byteArrays, { type: contentType });
-        }
-    </script>
+            <section class="h-full w-full flex justify-center items-center px-8">
+                <div class="grid grid-cols-1 gap-8 w-full">
+                    <button class="flex justify-center items-center bg-blue-500 h-40 rounded-2xl hover:bg-blue-700">
+                        <h2 class="text-3xl font-extrabold">Algoritmos</h2>
+                    </button>
+                    <button class="flex justify-center items-center bg-blue-500 h-40 rounded-2xl hover:bg-blue-700">
+                        <h2 class="text-3xl font-extrabold">Modelo OSI</h2>
+                    </button>
+                    <button class="flex justify-center items-center bg-blue-500 h-40 rounded-2xl hover:bg-blue-700">
+                        <h2 class="text-3xl font-extrabold">Protocolo HTTP</h2>
+                    </button>
+                    <button class="flex justify-center items-center bg-blue-500 h-40 rounded-2xl hover:bg-blue-700">
+                        <h2 class="text-3xl font-extrabold">Roteamento</h2>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </section>
+    <div class="h-screen border-l border-gray-700"></div>
+    <section class="w-80 p-6 gap-2 flex flex-col">
+        <p class="text-lg font-bold ">Membros do chat</p>
+        <ul id="members" class="text-lg">
+            <!-- <li>artur - online</li> -->
+        </ul>
+    </section>
 </body>
+
+<script>
+    const nomeUsuario = prompt("Digite seu nome de usuário:");
+
+    if (!nomeUsuario) {
+        alert("Nome de usuário é obrigatório. Recarregue a página e insira um nome.");
+        throw new Error("Nome de usuário não fornecido.");
+    }
+
+    const socket = new WebSocket("ws://localhost:8765");
+    const chatDiv = document.getElementById("chat");
+    const membersList = document.getElementById("members");
+    const videoContainer = document.getElementById("video-container");
+    const videoInput = document.getElementById("videoInput");
+
+    socket.onopen = () => {
+        // Enviar o nome de usuário ao servidor quando a conexão é estabelecida
+        socket.send(nomeUsuario);
+    };
+
+    socket.onmessage = (event) => {
+        const mensagem = event.data;
+        console.log(mensagem)
+
+        // Verificar se a mensagem é um vídeo
+        if (mensagem.startsWith("VIDEO:")) {
+            exibirVideo(nomeUsuario, mensagem.substring(6));
+        } else if (mensagem.startsWith("STATUS:")) {
+            const [, nomeUsuario, status] = mensagem.split(':');
+            const membroCadastrado = document.getElementById(nomeUsuario);
+
+            if (membroCadastrado) membroCadastrado.textContent = `${nomeUsuario} - ${status}`;
+            else {
+                const novoMembro = document.createElement("li");
+                novoMembro.textContent = `${nomeUsuario} - Online`;
+                novoMembro.id = nomeUsuario;
+                membersList.appendChild(novoMembro);
+            }
+        }
+        else {
+            // Se não for um vídeo, exibir como mensagem de texto no chat
+            const mensagemRecebida = document.createElement("p");
+            mensagemRecebida.textContent = mensagem;
+            chatDiv.appendChild(mensagemRecebida);
+        }
+    };
+</script>
+
 </html>
