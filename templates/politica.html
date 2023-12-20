@@ -22,17 +22,18 @@
     <script>
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on('message_politica', function(msg){
+        socket.on('message_politica', function(data){
             var ul = document.getElementById('chat');
             var li = document.createElement('li');
-            li.appendChild(document.createTextNode(msg));
+            li.appendChild(document.createTextNode(data.name + ': ' + data.message));
             ul.appendChild(li);
         });
 
         document.getElementById('form').onsubmit = function(event) {
             event.preventDefault();
             var messageInput = document.getElementById('mensagem');
-            socket.emit('message_politica', messageInput.value);
+            var name = sessionStorage.getItem('username');
+            socket.emit('message_politica', {'name': name, 'message': messageInput.value});
             messageInput.value = '';
         };
 

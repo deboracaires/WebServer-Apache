@@ -55,13 +55,13 @@ def handle_message(data):
 #----------------Politica----------------------#
 @app.route('/politica')
 def politica():
-    print('aaaa')
     return render_template('politica.html')
 
 @socketio.on('message_politica')
-def handle_message_politica(msg):
-    print('Received political message: ' + msg)
-    socketio.emit('message_politica', msg)
+def handle_message_culinaria(data):
+    name = data['name']
+    message = data['message']
+    socketio.emit('message_politica', {'name': name, 'message': message})
 #-----------------Politica---------------------#
 
 
@@ -78,29 +78,32 @@ def handle_message_futebol(data):
 
 #-----------------Futebol---------------------#
 
-#----------------Religiao----------------------#
-@app.route('/religiao')
-def religiao():
-    return render_template('religiao.html')
-
-@socketio.on('message_religiao')
-def handle_message_religiao(msg):
-    print('Received religiao message: ' + msg)
-    socketio.emit('message_religiao', msg)
-#-----------------Religiao---------------------#
-
-
 #----------------Culinaria----------------------#
 @app.route('/culinaria')
 def culinaria():
     return render_template('culinaria.html')
 
 @socketio.on('message_culinaria')
-def handle_message_culinaria(msg):
-    print('Received culinaria message: ' + msg)
-    socketio.emit('message_culinaria', msg)
+def handle_message_culinaria(data):
+    name = data['name']
+    message = data['message']
+    socketio.emit('message_culinaria', {'name': name, 'message': message})
+
 #-----------------Culinaria---------------------#
 
+
+
+#----------------Religiao----------------------#
+@app.route('/religiao')
+def religiao():
+    return render_template('religiao.html')
+
+@socketio.on('message_religiao')
+def handle_message_culinaria(data):
+    name = data['name']
+    message = data['message']
+    socketio.emit('message_religiao', {'name': name, 'message': message})
+#-----------------Religiao---------------------#
 
 
 if __name__ == '__main__':
