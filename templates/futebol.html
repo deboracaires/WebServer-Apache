@@ -18,26 +18,29 @@
         <button class="botao">Enviar</button>
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- futebol.html -->
     <script>
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on('message_futebol', function(msg){
-            var ul = document.getElementById('chat'); // Corrigido para 'chat'
+        socket.on('message_futebol', function(data){
+            var ul = document.getElementById('chat');
             var li = document.createElement('li');
-            li.appendChild(document.createTextNode(msg));
+            li.appendChild(document.createTextNode(data.name + ': ' + data.message));
             ul.appendChild(li);
         });
 
         document.getElementById('form').onsubmit = function(event) {
             event.preventDefault();
-            var messageInput = document.getElementById('mensagem'); // Corrigido para 'mensagem'
-            socket.emit('message_futebol', messageInput.value);
+            var messageInput = document.getElementById('mensagem');
+            var name = sessionStorage.getItem('username');
+            socket.emit('message_futebol', {'name': name, 'message': messageInput.value});
             messageInput.value = '';
         };
 
         function redirect(tema){
             window.location.href = "/" + tema;
         }
-    </script>
+</script>
+
 </body>
 </html>

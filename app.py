@@ -3,8 +3,7 @@ from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-
-app = Flask(__name__,  static_folder="templates")
+app = Flask(__name__, static_folder="templates")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -45,9 +44,12 @@ def handle_login(data):
         socketio.emit('redirect', '/')
 
 @socketio.on('message')
-def handle_message(msg):
-    # print('Received message: ' + msg)
-    socketio.emit('message', msg)
+def handle_message(data):
+    name = request.sid  # Pega o ID da sessão como nome (pode ser personalizado conforme necessário)
+    message = data['message']
+    topic = data['topic']
+    print(f'Received message from {name} in {topic}: {message}')
+    socketio.emit(f'message_{topic}', {'name': name, 'message': message})
  #---------------ASSUNTOS GERAIS---------------#
 
 #----------------Politica----------------------#
@@ -69,9 +71,11 @@ def futebol():
     return render_template('futebol.html')
 
 @socketio.on('message_futebol')
-def handle_message_futebol(msg):
-    print('Received futebol message: ' + msg)
-    socketio.emit('message_futebol', msg)
+def handle_message_futebol(data):
+    name = data['name']
+    message = data['message']
+    socketio.emit('message_futebol', {'name': name, 'message': message})
+
 #-----------------Futebol---------------------#
 
 #----------------Religiao----------------------#
