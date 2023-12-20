@@ -1,0 +1,47 @@
+.tela {
+    display: flex !important;
+    width: 100vw;
+    height: 100vh;
+    background-color: blueviolet;
+}
+
+.corpo {
+    width: 70vw;
+    height: 100vh;
+    background-color: aqua;
+}
+
+.chat {
+    width: 30vw;
+    height: 100vh;
+    background-color: pink;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.container-messages {
+    width: 100%;
+    height: 90%;
+}
+.input {
+    width: 100%;
+    height: 10%;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#message_input {
+    /* width: 70%; */
+    background-color: aliceblue;
+}
+
+#form {
+    /* position: absolute; */
+    /* bottom: 5px; */
+    /* left: calc(30vw/2 - 20vw); */
+}

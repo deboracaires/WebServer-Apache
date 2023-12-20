@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/templates/css/reset.css">
+    <link rel="stylesheet" href="/templates/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;500&display=swap" rel="stylesheet">
     <title>WebSocket Chat</title>
 </head>
 <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="message_input" autocomplete="off" /><button>Send</button>
-    </form>
+    <div class="tela">
+        <div class="corpo"></div>
+        <div class="chat">
+            <div class="container-messages">
+                <ul id="messages"></ul>
+            </div>
+            
+            <div class="input">
+                <form id="form" action="">
+                    <input id="message_input" autocomplete="off" /><button>Send</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
 
         socket.on('message', function(msg){
             var ul = document.getElementById('messages');
