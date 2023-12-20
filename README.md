@@ -1,6 +1,6 @@
 Configurar DNS 
 
-`sudo nano /ets/hosts`
+`sudo nano /etc/hosts`
 
 adicionar a linha
 
