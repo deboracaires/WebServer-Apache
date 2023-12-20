@@ -21,7 +21,7 @@ body {
     margin-right: 5px;
     height: 5vh;
 }
-#enviar {
+.botao {
     width: 20%;
     padding: 8px;
     background-color: #4CAF50;
@@ -29,6 +29,11 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.tema{
+    background-color: lightgray;
+    width: 10%;
 }
 
 .campoTexto{
@@ -39,7 +44,9 @@ body {
 }
 
 .titulo{
-    margin-top: 8px;
+    margin-top: 15px;
     font-size: 40px;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
 }

@@ -7,14 +7,15 @@
     <title>WebSocket Chat</title>
 </head>
 <body>
-    <button id="enviar" onclick="render_template('culinaria.html')">Enviar</button>
     <div class="titulo">
-        <a>Culinária</a>
+        <button class="botao tema" onclick="redirect('religiao')">Tema Anterior</button>
+        <div>Culinária</div>
+        <button class="botao tema" onclick="redirect('futebol')">Proximo Tema</button>
     </div>
     <ul id="chat"></ul>
     <form id="form" action="" class="campoTexto">
         <input type="text" id="mensagem" autocomplete="off" placeholder="Digite sua mensagem"/>
-        <button id="enviar">Enviar</button>
+        <button class="botao">Enviar</button>
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -34,6 +35,14 @@
             socket.emit('message_culinaria', messageInput.value);
             messageInput.value = '';
         };
+
+        function redirect(tema){
+            window.location.href = "/" + tema;
+        }
+
+        function redirect(tema){
+            window.location.href = "/" + tema;
+        }
     </script>
 </body>
 </html>
