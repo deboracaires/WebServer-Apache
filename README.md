@@ -1,3 +1,19 @@
+## Projeto de pesquisa - servidor de diálogos usando camada de aplicação
+
+Repositório destinado a matéria de Fundamentos de Redes de Computadores da Universidade de Brasília (2023-2). 
+
+O contexto do projeto envolve a criação e implementacão de um servidor de comunicação destinado a diversos clientes, utilizando o modelo cliente/servidor.
+
+## Integrantes
+| Nome                            | Matrícula      |
+|---------------------------------|----------------|
+| Artur de Sousa Vieira           | 19/0010606     |
+| Carlos Eduardo Miranda Roriz    | 19/0011424     |
+| Débora Caires de S. Moreira     | 22/2015103     |
+| João Victor Teixeira Batista    | 19/0109963     |
+| Laura Pinos de Oliveira         | 19/0090901     |
+
+## Como rodar o projeto
 Configurar DNS 
 
 `sudo nano /etc/hosts`
